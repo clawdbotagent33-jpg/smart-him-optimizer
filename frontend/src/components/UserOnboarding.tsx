@@ -6,7 +6,6 @@ import React, { useState, useEffect } from 'react';
 import { Tour, Button, Typography } from 'antd';
 import {
   QuestionCircleOutlined,
-  CheckCircleOutlined,
 } from '@ant-design/icons';
 
 const { Text } = Typography;
@@ -50,12 +49,19 @@ const UserOnboarding: React.FC<UserOnboardingProps> = ({
     onComplete?.();
   };
 
-  const tourSteps = steps.map((step) => ({
-    target: step.selector,
-    title: step.title,
-    description: step.description,
-    placement: step.placement || 'top',
-  }));
+  // Tour 스텝 변환 - null 반환을 허용하도록 처리
+  const tourSteps = steps.map((step) => {
+    const safeSelector = () => {
+      const el = step.selector();
+      return el;
+    };
+    return {
+      target: safeSelector,
+      title: step.title,
+      description: step.description,
+      placement: step.placement || 'top',
+    };
+  });
 
   return (
     <>
@@ -80,13 +86,12 @@ const UserOnboarding: React.FC<UserOnboardingProps> = ({
         onClose={handleComplete}
         current={current}
         onChange={setCurrent}
-        steps={tourSteps}
+        steps={tourSteps as any}
         indicatorsRender={(current, total) => (
           <Text type="secondary">
             {current + 1} / {total}
           </Text>
         )}
-        type="primary"
       />
     </>
   );
