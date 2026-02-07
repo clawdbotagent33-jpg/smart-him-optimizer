@@ -129,6 +129,23 @@ export interface DashboardMetrics {
   aGroupRatio: number;
 }
 
+export interface GroupDistribution {
+  dates: string[];
+  series: {
+    A: number[];
+    B: number[];
+    C: number[];
+  };
+}
+
+export interface TopDiagnoses {
+  diagnoses: Array<{
+    code: string;
+    count: number;
+    avg_weight: number;
+  }>;
+}
+
 export interface ComplianceReport {
   admissionId: string;
   isCompliant: boolean;
@@ -217,12 +234,14 @@ class ApiClient {
   }
 
   // 파일 업로드
-  async uploadFile<T = unknown>(url: string, file: File, additionalData?: Record<string, string>): Promise<T> {
+  async uploadFile<T = unknown>(url: string, file: File, additionalData?: Record<string, string | undefined>): Promise<T> {
     const formData = new FormData();
     formData.append('file', file);
     if (additionalData) {
       Object.entries(additionalData).forEach(([key, value]) => {
-        formData.append(key, value);
+        if (value !== undefined) {
+          formData.append(key, value);
+        }
       });
     }
 
@@ -269,10 +288,23 @@ export interface CdiQueryRequest {
   priority?: 'low' | 'medium' | 'high';
 }
 
+export interface CsvUploadResponse {
+  rows_processed: number;
+  message: string;
+}
+
+export interface DocumentStats {
+  total_documents: number;
+  chunk_count: number;
+  total_embeddings: number;
+  document_count: number;
+  status: 'active' | 'inactive' | 'error';
+}
+
 export const admissionsApi = {
   list: (params?: AdmissionListParams) => api.get<Admission[]>('/admissions', { params }),
   get: (admissionId: string) => api.get<Admission>(`/admissions/${admissionId}`),
-  uploadCsv: (file: File) => api.uploadFile('/admissions/upload-csv', file),
+  uploadCsv: (file: File) => api.uploadFile<CsvUploadResponse>('/admissions/upload-csv', file),
   reportSafetyIncident: (data: SafetyIncidentRequest) => api.post('/admissions/safety-incident', data),
   createCdiQuery: (data: CdiQueryRequest) => api.post('/admissions/cdi-query', data),
 };
@@ -292,7 +324,7 @@ export const documentsApi = {
   upload: (file: File, docType?: string) => api.uploadFile('/documents/upload', file, { doc_type: docType }),
   query: (question: string, contextType?: string, useLlm?: boolean) =>
     api.post('/documents/query', { question, context_type: contextType, use_llm: useLlm }),
-  getStats: () => api.get('/documents/stats'),
+  getStats: () => api.get<DocumentStats>('/documents/stats'),
   delete: (documentId: number) => api.delete(`/documents/${documentId}`),
 };
 
@@ -305,9 +337,9 @@ export const dashboardApi = {
   getDenialAnalytics: (startDate?: string, endDate?: string) =>
     api.get('/dashboard/denials', { params: { start_date: startDate, end_date: endDate } }),
   getGroupDistribution: (department?: string, days?: number) =>
-    api.get('/dashboard/group-distribution', { params: { department, days } }),
+    api.get<GroupDistribution>('/dashboard/group-distribution', { params: { department, days } }),
   getTopDiagnoses: (limit?: number, days?: number) =>
-    api.get('/dashboard/top-diagnoses', { params: { limit, days } }),
+    api.get<TopDiagnoses>('/dashboard/top-diagnoses', { params: { limit, days } }),
   getPerformanceMetrics: (days?: number) =>
     api.get('/dashboard/performance-metrics', { params: { days } }),
 };

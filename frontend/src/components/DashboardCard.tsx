@@ -5,7 +5,7 @@ import React from 'react';
 import { Card, Statistic } from 'antd';
 
 interface DashboardCardProps {
-  title: string;
+  title: string | React.ReactNode;
   value: number | string;
   suffix?: string;
   prefix?: React.ReactNode;

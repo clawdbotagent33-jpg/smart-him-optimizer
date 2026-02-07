@@ -19,7 +19,7 @@ import {
   FileTextOutlined,
 } from '@ant-design/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { admissionsApi, predictionsApi, Admission } from '../services/api';
+import { admissionsApi, predictionsApi, Admission, type CsvUploadResponse } from '../services/api';
 import PredictionResultCard from '../components/PredictionResultCard';
 import type { UploadProps } from 'antd';
 
@@ -42,7 +42,7 @@ const AdmissionsPage: React.FC = () => {
 
   const uploadMutation = useMutation({
     mutationFn: admissionsApi.uploadCsv,
-    onSuccess: (data) => {
+    onSuccess: (data: CsvUploadResponse) => {
       message.success(`${data.rows_processed}건의 데이터를 처리했습니다`);
       setUploadModalOpen(false);
       queryClient.invalidateQueries({ queryKey: ['admissions'] });

@@ -19,7 +19,7 @@ import GroupDistributionChart from '../components/GroupDistributionChart';
 import UserOnboarding from '../components/UserOnboarding';
 import NotificationBanner from '../components/NotificationBanner';
 import { ContextHelp } from '../components/TooltipWrapper';
-import { dashboardApi } from '../services/api';
+import { dashboardApi, type GroupDistribution, type TopDiagnoses } from '../services/api';
 import dayjs from 'dayjs';
 
 const { Title } = Typography;
@@ -39,12 +39,12 @@ const DashboardPage: React.FC = () => {
     queryFn: () => dashboardApi.getSummary(department, days),
   });
 
-  const { data: groupDistribution } = useQuery({
+  const { data: groupDistribution } = useQuery<GroupDistribution>({
     queryKey: ['dashboard', 'group-distribution', department, days],
     queryFn: () => dashboardApi.getGroupDistribution(department, days),
   });
 
-  const { data: topDiagnoses } = useQuery({
+  const { data: topDiagnoses } = useQuery<TopDiagnoses>({
     queryKey: ['dashboard', 'top-diagnoses', days],
     queryFn: () => dashboardApi.getTopDiagnoses(10, days),
   });
