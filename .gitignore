@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+backend/__pycache__/
+backend/.venv/
+**/__pycache__/
+**/*.pyc
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+
+# Environment files
+.env
+.env.local
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Cache
+.cache/
+*.cache
+.pytest_cache/
+.coverage
+
+# Docker volumes
+data/
+postgres_data/
