@@ -2,7 +2,7 @@
  * 툴팱 래퍼 컴포넌트
  * 사용자 친화적 툴팁을 제공하는 재사용 가능 컴포넌트
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tooltip, Button } from 'antd';
 import { InfoCircleOutlined, CloseOutlined } from '@ant-design/icons';
 

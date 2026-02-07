@@ -234,7 +234,7 @@ describe('UserOnboarding', () => {
   });
 
   describe('접근성', () => {
-    it '가이드 보기 버튼이 접근 가능해야 함', () => {
+    it('가이드 보기 버튼이 접근 가능해야 함', () => {
       render(
         <>
           <div data-testid="step1">Step 1</div>
